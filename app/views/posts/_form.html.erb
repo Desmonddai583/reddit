@@ -1,0 +1,20 @@
+<div class="well">
+  <%= render partial: 'shared/validation_errors', object: @post %>
+
+  <%= form_for @post do |f| %>
+    <%= f.label :title %>
+    <%= f.text_field :title %>
+    <%= f.label :url %>
+    <%= f.text_field :url%>
+    <%= f.label :description %>
+    <%= f.text_area :description %>
+    <br/>
+    <%= f.label 'Categories' %>
+    <%= f.collection_check_boxes :category_ids, Category.all, :id, :name do |cb| %>
+      <% cb.label(class: 'checkbox inline') { cb.check_box(class: 'checkbox') + cb.text } %>
+    <% end %>
+    <br/>
+    <br/>
+    <%= f.submit button, class: 'btn btn-primary' %>
+  <% end %>
+</div>

@@ -1,0 +1,12 @@
+<% if validation_errors.errors.any? %>
+  <div class="row">
+    <div class="alert alert-error span8">
+      <h5>Please fix the following errors:</h5>
+      <ul>
+        <% validation_errors.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+<% end %>
