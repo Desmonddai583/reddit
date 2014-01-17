@@ -1,5 +1,7 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: [:show,:edit,:update]
+  before_action :set_post, only: [:show,:edit,:update,:vote]
+  before_action :require_user, except: [:index,:show]
+  before_action :require_creator, only: [:edit,:update]
 
   def index
     @posts = Post.all
@@ -15,6 +17,8 @@ class PostsController < ApplicationController
 
   def create
     @post = Post.new(post_params)
+    @post.user_id = current_user.id
+
     if @post.save
       flash[:notice] = 'Your post was created.'
       redirect_to posts_path
@@ -35,13 +39,32 @@ class PostsController < ApplicationController
     end
   end
 
+  def vote
+    vote = Vote.create(vote: params[:vote], creator: current_user, voteable: @post)
+
+    if vote.valid?
+      flash[:notice] = 'Your vote was counted.'
+    else
+      flash[:error] = "You can only vote for <strong>#{@post.title}</strong> once.".html_safe
+    end
+
+    redirect_to :back
+  end
+
   private
 
-    def post_params
-      params.require(:post).permit(:url,:title,:description,category_ids: [])
-    end
+  def post_params
+    params.require(:post).permit(:url,:title,:description,category_ids: [])
+  end
 
-    def set_post
-      @post = Post.find(params[:id])
+  def set_post
+    @post = Post.find(params[:id])
+  end
+
+  def require_creator
+    unless current_user.id == @post.creator.id
+      flash[:error] = "You're not allowed to do that."
+      redirect_to root_path
     end
+  end
 end

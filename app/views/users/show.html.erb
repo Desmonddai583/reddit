@@ -1,0 +1,28 @@
+<%= render '/shared/title', title: raw("Profile: #{@user.username}") %>
+<div class='well'>
+  <dl class="dl-horizontal">
+    <dt>Username:</dt>
+    <dd><%= @user.username %></dd>
+  </dl>
+</div>
+
+<h5><%= @user.username %>'s Activity</h5>
+
+<ul class='nav nav-tabs'>
+  <li class="<%= 'active' if params[:tab].nil? %>">
+    <%= link_to user_path(@user) do %>
+      Posts (<%= @user.posts.size %>)
+    <% end %>
+  </li>
+  <li class="<%= 'active' if params[:tab] == 'comments' %>">
+    <%= link_to user_path(@user,tab: :comments) do %>
+      Comments (<%= @user.comments.size %>)
+    <% end %>
+  </li>
+</ul>
+
+<% if params[:tab].nil? %>
+  <%= render partial: '/posts/posts_list', object: @user.posts %>
+<% else %>
+  <%= render '/comments/comments_list', object: @user, show_post: true %>
+<% end %>

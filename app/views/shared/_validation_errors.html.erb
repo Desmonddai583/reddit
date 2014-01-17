@@ -3,8 +3,10 @@
     <div class="alert alert-error span8">
       <h5>Please fix the following errors:</h5>
       <ul>
-        <% validation_errors.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
+        <% validation_errors.errors.each do |attr, msg| %>
+        <% if validation_errors.errors[attr].first == msg %>
+        <li><%= "#{attr} #{msg}" %></li>
+        <% end %>
         <% end %>
       </ul>
     </div>

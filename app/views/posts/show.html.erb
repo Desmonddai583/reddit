@@ -1,6 +1,8 @@
+<% if logged_in? && current_user.id == @post.user_id %>
 <div class="pull-right">
   <%= link_to '[Edit Post]', edit_post_path(@post) %>
 </div>
+<% end %>
 <p>
   <%= render @post.categories %>
 </p>
@@ -10,6 +12,7 @@
   <hr/>
 </p>
 
+<% if logged_in? %>
 <%= render partial: 'shared/validation_errors', object: @comment %>
 <%= form_for [@post,@comment] do |f| %>
   <%= f.label :body, 'Leave a comment' %>
@@ -17,16 +20,7 @@
   <br/>
   <%= f.submit 'Create comment', class: 'btn btn-primary' %>
 <% end %>
+<% end %>
 
 <h5>Comments:</h5>
-<% @post.comments.each do |comment| %>
-<div class="row">
-  <div class="well span8">
-    <em>"<%= comment.body %>"</em>
-    <br/>
-    <span class="quiet">by</span>
-    <%= link_to comment.creator.username, user_path(comment.creator) %>
-    <small>at <%= format_time(comment.created_at) %></small>
-  </div>
-</div>
-<% end %>
+<%= render '/comments/comments_list', object: @post %>

@@ -1,0 +1,31 @@
+<% show_post ||= false %>
+
+<% sorted_by_votes(object.comments).each do |comment| %>
+<div class="row">
+  <div class="span1 well text-center  comment_votes">
+  <% if logged_in? %>
+  <%= link_to vote_comment_path(comment,vote: true), method: 'post' do %>
+  <i class='icon-arrow-up'></i>
+  <% end %>
+  <br/>
+  <%= pluralize(comment.total_votes,'vote') %>
+  <br/>
+  <%= link_to vote_comment_path(comment,vote: false), method: 'post' do %>
+  <i class='icon-arrow-down'></i>
+  <% end %>
+  <% else %>
+    <%= pluralize(comment.total_votes,'vote') %>
+  <% end %>
+  </div>
+  <div class="well span8">
+    <em>"<%= comment.body %>"</em>
+    <% if show_post %>
+    on <%= link_to comment.post.title, post_path(comment.post) %>
+    <% end %>
+    <br/>
+    <span class="quiet">by</span>
+    <%= link_to comment.creator.username, user_path(comment.creator) %>
+    <small>at <%= format_time(comment.created_at) %></small>
+  </div>
+</div>
+<% end %>
