@@ -42,13 +42,23 @@ class PostsController < ApplicationController
   def vote
     vote = Vote.create(vote: params[:vote], creator: current_user, voteable: @post)
 
-    if vote.valid?
-      flash[:notice] = 'Your vote was counted.'
-    else
-      flash[:error] = "You can only vote for <strong>#{@post.title}</strong> once.".html_safe
+    respond_to do |format|
+      format.html do
+       if vote.valid?
+         flash[:notice] = 'Your vote was counted.'
+       else
+         flash[:error] = "You can only vote for <strong>#{@post.title}</strong> once.".html_safe
+       end
+       redirect_to :back
+      end
+      format.js do
+        if vote.valid?
+          flash.now[:notice] = 'Your vote was counted.'
+        else
+          flash.now[:error] = "You can only vote for <strong>#{@post.title}</strong> once.".html_safe
+        end
+      end
     end
-
-    redirect_to :back
   end
 
   private
@@ -58,11 +68,11 @@ class PostsController < ApplicationController
   end
 
   def set_post
-    @post = Post.find(params[:id])
+    @post = Post.find_by(slug: params[:id])
   end
 
   def require_creator
-    unless current_user.id == @post.creator.id
+    unless current_user.id == @post.creator.id || current_user.admin?
       flash[:error] = "You're not allowed to do that."
       redirect_to root_path
     end

@@ -1,7 +1,7 @@
 class Comment < ActiveRecord::Base
-  include CalVotes
+  #include Voteable
+  include VoteableDesmondJan
 
-  has_many :votes, as: :voteable
   belongs_to :creator, foreign_key: "user_id", class_name: "User"
   belongs_to :post
   validates :body, presence: true

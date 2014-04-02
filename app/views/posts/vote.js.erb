@@ -1,0 +1,5 @@
+$('#message').html('<%=j render 'layouts/messages' %>');
+$('#post_<%= @post.id %>_votes').html("<%= pluralize(@post.total_votes,'vote') %>");
+$("html, body").animate({scrollTop: 0},0);
+
+
